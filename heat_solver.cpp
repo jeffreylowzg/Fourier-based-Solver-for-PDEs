@@ -1,32 +1,11 @@
+// heat_solver.cpp
+#include "heat_solver.h"
 #include <iostream>
 #include <fstream>
-#include <vector>
-#include <cmath>
-#include <cassert>
-#include <string>
 #include <sstream>
-#include <sys/stat.h> 
-
-//-------------------------------------------------------------------
-// MDarray class for 1D arrays
-//-------------------------------------------------------------------
-template<typename T>
-class MDArray {
-private:
-    size_t size_;
-    std::vector<T> data;
-public:
-    MDArray(size_t n) : size_(n), data(n, T()) {}
-    T& operator[](size_t i) { 
-        assert(i < size_);
-        return data[i]; 
-    }
-    const T& operator[](size_t i) const { 
-        assert(i < size_);
-        return data[i]; 
-    }
-    size_t size() const { return size_; }
-};
+#include <cmath>
+#include <sys/stat.h>
+#include <fftw3.h>
 
 //-------------------------------------------------------------------
 // Compute Laplacian using central differences (Dirichlet BC)
@@ -38,7 +17,7 @@ double laplacian(const MDArray<double>& u, size_t i, double dx) {
 }
 
 //-------------------------------------------------------------------
-// RK4 (Explicit) integration step
+// RK4 (Explicit) integration step (finite-difference)
 //-------------------------------------------------------------------
 void RK4_step(MDArray<double>& u, double dt, double dx, double alpha) {
     size_t n = u.size();
@@ -84,47 +63,45 @@ void saveSolution(const MDArray<double>& u, const std::string& filename, double 
 }
 
 //-------------------------------------------------------------------
-// Main: Solves heat equation, saves multiple solutions over time
+// Spectral step using FFTW (for periodic BC)
 //-------------------------------------------------------------------
-int main() {
-    const double L = 1.0;
-    const size_t n = 101;
-    const double dx = L / (n - 1);
-    const double alpha = 0.01;
-    const double dt = 0.0001;
-    const size_t steps = 5000;
-    const size_t save_interval = 100; // Save every 100 steps
+void spectral_step(MDArray<double>& u, double dt, double alpha, double L) {
+    int n = u.size();
+    // Allocate memory for FFTW arrays
+    double* in = fftw_alloc_real(n);
+    fftw_complex* out = fftw_alloc_complex(n/2 + 1);
 
-    mkdir("data", 0777);
-
-    MDArray<double> u(n);
-
-    // New initial condition: Gaussian pulse centered at L/2
-    const double x0 = L / 2.0;   // Center of Gaussian
-    const double sigma = 0.05;   // Width of Gaussian
-
-    for(size_t i = 0; i < n; i++) {
-        double x = i * dx;
-        u[i] = exp(-( (x - x0)*(x - x0) ) / (2 * sigma * sigma));
+    // Copy the current solution into the input array
+    for (int i = 0; i < n; i++) {
+        in[i] = u[i];
     }
 
-    // Initial condition save
-    saveSolution(u, "solution_0.dat", dx, 0.0);
+    // Create and execute forward FFT (real-to-complex)
+    fftw_plan forward = fftw_plan_dft_r2c_1d(n, in, out, FFTW_ESTIMATE);
+    fftw_execute(forward);
+    fftw_destroy_plan(forward);
 
-    // Time integration loop
-    for(size_t step = 1; step <= steps; step++) {
-        RK4_step(u, dt, dx, alpha);
-
-        // Save at intervals
-        if(step % save_interval == 0 || step == steps) {
-            double current_time = step * dt;
-            std::ostringstream fname;
-            fname << "solution_" << step << ".dat";
-            saveSolution(u, fname.str(), dx, current_time);
-            std::cout << "Saved " << fname.str() << " at time t=" << current_time << std::endl;
-        }
+    // Update Fourier coefficients exactly for the heat equation:
+    // The wave number for mode k is: k_val = 2*pi*k/L
+    // and û(k, t+dt) = û(k, t) * exp(-alpha * k_val^2 * dt)
+    for (int k = 0; k < n/2 + 1; k++) {
+        double k_val = (2.0 * M_PI * k) / L;
+        double factor = exp(-alpha * k_val * k_val * dt);
+        out[k][0] *= factor; // real part
+        out[k][1] *= factor; // imaginary part
     }
 
-    std::cout << "Simulation complete." << std::endl;
-    return 0;
+    // Create and execute inverse FFT (complex-to-real)
+    fftw_plan backward = fftw_plan_dft_c2r_1d(n, out, in, FFTW_ESTIMATE);
+    fftw_execute(backward);
+    fftw_destroy_plan(backward);
+
+    // Normalize the result (FFTW does not scale the inverse transform)
+    for (int i = 0; i < n; i++) {
+        u[i] = in[i] / n;
+    }
+
+    // Free FFTW allocated memory
+    fftw_free(in);
+    fftw_free(out);
 }
