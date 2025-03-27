@@ -7,6 +7,31 @@
 #include "heat_solver.h"
 
 int main(int argc, char* argv[]) {
+    // Require exactly two command-line arguments: method and initial condition.
+    if (argc < 3) {
+        std::cerr << "Usage: " << argv[0] << " <fd|spectral> <sine|gaussian>" << std::endl;
+        return 1;
+    }
+    
+    std::string method = argv[1];
+    std::string ic_type = argv[2];
+    
+    // Validate method choice.
+    bool useSpectral = false;
+    if (method == "spectral") {
+        useSpectral = true;
+    } else if (method != "fd") {
+        std::cerr << "Invalid method: " << method << ". Use either 'fd' or 'spectral'." << std::endl;
+        return 1;
+    }
+    
+    // Validate initial condition.
+    if (ic_type != "sine" && ic_type != "gaussian") {
+        std::cerr << "Invalid initial condition: " << ic_type << ". Use either 'sine' or 'gaussian'." << std::endl;
+        return 1;
+    }
+    
+    // Simulation parameters.
     const double L = 1.0;
     const size_t n = 101;
     const double dx = L / (n - 1);
@@ -15,31 +40,15 @@ int main(int argc, char* argv[]) {
     const size_t steps = 50000;
     const size_t save_interval = 100; // Save every 100 steps
 
-    // Determine method: default to finite-difference ("fd") if not specified.
-    std::string method = "fd";
-    if (argc >= 2) {
-        method = argv[1];
-    }
-    bool useSpectral = (method == "spectral");
-
-    // Determine initial condition type:
-    std::string ic_type;
-    if (argc >= 3) {
-        ic_type = argv[2];
-    } else {
-        // Default: "sine" for spectral and "gaussian" for finite-difference.
-        ic_type = useSpectral ? "sine" : "gaussian";
-    }
-    
-    std::cout << "Method: " << (useSpectral ? "spectral (FFTW)" : "finite-difference") << std::endl;
+    std::cout << "Method: " << (useSpectral ? "spectral (RK4 in Fourier space)" : "finite-difference (RK4 in real space)") << std::endl;
     std::cout << "Initial condition: " << ic_type << std::endl;
 
-    // Create output directory
+    // Create output directory.
     mkdir("data", 0777);
 
     MDArray<double> u(n);
 
-    // Set initial condition based on the chosen type:
+    // Set initial condition based on the chosen type.
     if (ic_type == "sine") {
         // Periodic initial condition: combination of sine waves.
         for (size_t i = 0; i < n; i++) {
@@ -54,26 +63,18 @@ int main(int argc, char* argv[]) {
             double x = i * dx;
             u[i] = exp(-((x - x0) * (x - x0)) / (2 * sigma * sigma));
         }
-    } else {
-        std::cerr << "Unknown initial condition type: " << ic_type << ". Using gaussian." << std::endl;
-        const double x0 = L / 2.0;
-        const double sigma = 0.05;
-        for (size_t i = 0; i < n; i++) {
-            double x = i * dx;
-            u[i] = exp(-((x - x0) * (x - x0)) / (2 * sigma * sigma));
-        }
     }
 
-    // Save initial condition
+    // Save the initial condition.
     saveSolution(u, "solution_0.dat", dx, 0.0);
 
-    // Time integration loop
+    // Time integration loop.
     for (size_t step = 1; step <= steps; step++) {
         if (useSpectral) {
-            // Evolve in Fourier space using the spectral method.
-            spectral_step(u, dt, alpha, L);
+            // Use spectral method with RK4 integration in Fourier space.
+            spectral_RK4_step(u, dt, alpha, L);
         } else {
-            // Use finite-difference method (RK4 integration).
+            // Use finite-difference method with RK4 integration in real space.
             RK4_step(u, dt, dx, alpha);
         }
 
