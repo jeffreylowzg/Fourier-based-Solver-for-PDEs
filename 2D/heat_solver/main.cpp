@@ -3,7 +3,6 @@
 #include <sstream>
 #include <sys/stat.h>
 #include "heat_solver2d.h"
-#include "MDArray2D.h"
 
 int main(int argc, char* argv[]) {
     // Require two command-line arguments: method and initial condition.
