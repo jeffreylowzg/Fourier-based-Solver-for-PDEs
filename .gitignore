@@ -1,1 +1,4 @@
-data/
+1D/data/
+2D/heat_solver/data/
+2D/convection/data/
+.venv/
