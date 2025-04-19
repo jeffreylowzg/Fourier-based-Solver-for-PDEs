@@ -1,4 +1,7 @@
 1D/data/
 2D/heat_solver/data/
 2D/convection/data/
+.vscode
 .venv/
+*.dat
+*.exe
