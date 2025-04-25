@@ -94,14 +94,14 @@ void spectral_RK4_step_2d_convection(MDArray2D<double>& u,
     fftw_free(out);
 
     // Impose nonperiodic (Dirichlet) boundary conditions:
-    for (int i = 0; i < nc; i++) {
-        u(i, 0) = 0.0;
-        u(i, nc - 1) = 0.0;
-    }
-    for (int j = 0; j < nc; j++) {
-        u(0, j) = 0.0;
-        u(nc - 1, j) = 0.0;
-    }
+    // for (int i = 0; i < nc; i++) {
+    //     u(i, 0) = 0.0;
+    //     u(i, nc - 1) = 0.0;
+    // }
+    // for (int j = 0; j < nc; j++) {
+    //     u(0, j) = 0.0;
+    //     u(nc - 1, j) = 0.0;
+    // }
 }
 
 //-------------------------------------------------------------------
@@ -179,14 +179,14 @@ void spectral_BE_step_2d_convection(MDArray2D<double>& u,
     fftw_free(out);
 
     // Impose nonperiodic (Dirichlet) boundaries.
-    for (int i = 0; i < nc; i++) {
-        u(i, 0) = 0.0;
-        u(i, nc - 1) = 0.0;
-    }
-    for (int j = 0; j < nc; j++) {
-        u(0, j) = 0.0;
-        u(nc - 1, j) = 0.0;
-    }
+    // for (int i = 0; i < nc; i++) {
+    //     u(i, 0) = 0.0;
+    //     u(i, nc - 1) = 0.0;
+    // }
+    // for (int j = 0; j < nc; j++) {
+    //     u(0, j) = 0.0;
+    //     u(nc - 1, j) = 0.0;
+    // }
 }
 
 //-------------------------------------------------------------------

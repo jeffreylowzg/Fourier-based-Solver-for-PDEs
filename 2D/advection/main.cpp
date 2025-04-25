@@ -60,9 +60,18 @@ int main(int argc, char* argv[]) {
                 u(i, j) = std::exp(-r2 / (2.0 * sigma * sigma));
             }
         }
+    } else if (ic_type=="disk") {
+        double x0=0.5*L, y0=0.5*L, r=0.15, w=0.05;
+        for (size_t i=0;i<n;i++) for (size_t j=0;j<n;j++){
+            double x=i*dx, y=j*dx;
+            double d2=(x-x0)*(x-x0)+(y-y0)*(y-y0);
+            bool in_disk = (d2 < r*r);
+            bool in_slot = (fabs(x-x0)<w/2 && y<y0);
+            u(i,j) = (in_disk && !in_slot) ? 1.0 : 0.0;
+        }
     } else {
         std::cerr << "Invalid initial condition: " << ic_type
-                  << ". Use 'sine' or 'gaussian'." << std::endl;
+                  << ". Use 'sine' or 'gaussian or disk'." << std::endl;
         return 1;
     }
 

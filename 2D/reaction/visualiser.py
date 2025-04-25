@@ -1,86 +1,76 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D  # ensure 3D support
-import glob
-import os
+from mpl_toolkits.mplot3d import Axes3D
+import glob, os
 from matplotlib.animation import FuncAnimation
 
-# Get sorted solution files based on the timestep number in the filename.
+# collect and sort your data files
 files = sorted(glob.glob("data/solution_*.dat"),
                key=lambda f: int(os.path.basename(f).split('_')[1].split('.')[0]))
-
 if not files:
-    print("No solution files found in the 'data/' directory.")
-    exit(1)
+    raise RuntimeError("No solution files found")
+
+# 1) Pre–scan to find global heat extrema:
+global_min = np.inf
+global_max = -np.inf
+for fn in files:
+    data = np.genfromtxt(fn, skip_header=1)
+    data = data[~np.isnan(data).any(axis=1)]
+    U = data[:,2]
+    global_min = min(global_min, U.min())
+    global_max = max(global_max, U.max())
 
 fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-ax.set_xlabel("x", fontsize=12)
-ax.set_ylabel("z", fontsize=12)  # second spatial coordinate, renamed as z
-ax.set_zlabel("Heat", fontsize=12)
+ax  = fig.add_subplot(111, projection='3d')
+ax.set_xlabel("x")
+ax.set_ylabel("y")    # call it “y” rather than “z”
+ax.set_zlabel("Heat")
 title = ax.set_title("")
 
-# Global variable for the current surface plot.
 surf = None
 
 def init():
     global surf
-    # Read the first file to initialize the plot.
+    # load first frame
     with open(files[0]) as f:
-        header_line = f.readline().strip()  # e.g., "# Time: 0.0000"
-        time_val = float(header_line.split()[-1])
+        t = float(f.readline().split()[-1])
         data = np.genfromtxt(f)
-    
-    # Filter out any potential NaN rows.
     data = data[~np.isnan(data).any(axis=1)]
-    num_points = data.shape[0]
-    n = int(np.sqrt(num_points))
-    if n * n != num_points:
-        print("Data does not form a square grid.")
-        exit(1)
-    
-    # Reshape the columns into n x n grids.
-    X = data[:, 0].reshape(n, n)
-    Z = data[:, 1].reshape(n, n)  # second column used as z
-    U = data[:, 2].reshape(n, n)  # heat value
-    
-    # Create the surface plot.
-    surf = ax.plot_surface(X, Z, U, cmap='viridis')
-    title.set_text(f"Time t = {time_val:.4f}")
-    
-    # Fix axis limits (using the range from the first frame).
-    ax.set_xlim(np.min(X), np.max(X))
-    ax.set_ylim(np.min(Z), np.max(Z))
-    ax.set_zlim(np.min(U), np.max(U))
+    n = int(np.sqrt(len(data)))
+    X = data[:,0].reshape(n,n)
+    Y = data[:,1].reshape(n,n)
+    U = data[:,2].reshape(n,n)
+
+    surf = ax.plot_surface(X, Y, U, cmap='viridis')
+    title.set_text(f"Time t = {t:.4f}")
+
+    # fix all three axes once and for all
+    ax.set_xlim(X.min(), X.max())
+    ax.set_ylim(Y.min(), Y.max())
+    ax.set_zlim(global_min, global_max)
+
     return surf, title
 
-def update(frame):
+def update(i):
     global surf
-    # Remove the old surface before plotting the new one.
-    if surf is not None:
+    if surf:
         surf.remove()
-        
-    with open(files[frame]) as f:
-        header_line = f.readline().strip()
-        time_val = float(header_line.split()[-1])
+    with open(files[i]) as f:
+        t = float(f.readline().split()[-1])
         data = np.genfromtxt(f)
-    
     data = data[~np.isnan(data).any(axis=1)]
-    num_points = data.shape[0]
-    n = int(np.sqrt(num_points))
-    
-    X = data[:, 0].reshape(n, n)
-    Z = data[:, 1].reshape(n, n)
-    U = data[:, 2].reshape(n, n)
-    
-    surf = ax.plot_surface(X, Z, U, cmap='viridis')
-    title.set_text(f"Time t = {time_val:.4f}")
+    n = int(np.sqrt(len(data)))
+    X = data[:,0].reshape(n,n)
+    Y = data[:,1].reshape(n,n)
+    U = data[:,2].reshape(n,n)
+
+    surf = ax.plot_surface(X, Y, U, cmap='viridis')
+    title.set_text(f"Time t = {t:.4f}")
+    # no need to reset limits here
     return surf, title
 
-# Create the animation with a 1000ms (1 second) interval between frames,
-# and add repeat=False so the animation stops after the final frame.
-ani = FuncAnimation(fig, update, frames=len(files), init_func=init,
-                    interval=10, blit=False, repeat=False)
+ani = FuncAnimation(fig, update, init_func=init,
+                    frames=len(files), interval=50, blit=False, repeat=False)
 
 plt.tight_layout()
 plt.show()
