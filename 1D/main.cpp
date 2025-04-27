@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
     const double dx = L / (n - 1);
     const double alpha = 0.01;
     const double dt = 0.0001;
-    const size_t steps = 50000;
+    const size_t steps = 100000;
     const size_t save_interval = 100; // Save every 100 steps
 
     std::cout << "Method: " << (useSpectral ? "spectral (RK4 in Fourier space)" : "finite-difference (RK4 in real space)") << std::endl;

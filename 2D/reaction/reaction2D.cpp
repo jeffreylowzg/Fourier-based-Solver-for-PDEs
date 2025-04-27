@@ -322,3 +322,80 @@ void saveSolution2D(const MDArray2D<double>& u,
     }
     file.close();
 }
+
+void reactiondiffusion_BE_step_2d_combined(MDArray2D<double>& u,
+                                           MDArray2D<double>& v,
+                                           double dt, double D, double r,
+                                           double L, double t,
+                                           const std::string& source_type,
+                                           const std::string& model_type) {
+    if (model_type == "logistic") {
+        diffusion_BE_step(u, dt/2.0, D, L);
+        reaction_Euler_update_with_source(u, dt, r, t, L, source_type);
+        diffusion_BE_step(u, dt/2.0, D, L);
+    }
+    else if (model_type == "grayscott") {
+        MDArray2D<double> u0 = u;
+        MDArray2D<double> v0 = v;
+
+        diffusion_BE_step(u0, dt/2.0, D, L);
+        diffusion_BE_step(v0, dt/2.0, D, L);
+
+        const double F = 0.04;
+        const double k = 0.06;
+
+        for (int i = 0; i < u.rows(); ++i)
+            for (int j = 0; j < u.cols(); ++j) {
+                double uu = u0(i,j), vv = v0(i,j);
+                double uvv = uu * vv * vv;
+                u(i,j) = uu + dt * (-uvv + F * (1.0 - uu));
+                v(i,j) = vv + dt * ( uvv - (F + k) * vv);
+            }
+
+        diffusion_BE_step(u, dt/2.0, D, L);
+        diffusion_BE_step(v, dt/2.0, D, L);
+    }
+    else {
+        std::cerr << "Unknown model_type in BE step: " << model_type << "\n";
+    }
+}
+
+void reactiondiffusion_RK4_step_2d_combined(MDArray2D<double>& u,
+                                            MDArray2D<double>& v,
+                                            double dt, double D, double r,
+                                            double L, double t,
+                                            const std::string& source_type,
+                                            const std::string& model_type) {
+    if (model_type == "logistic") {
+        diffusion_RK4_step(u, dt/2.0, D, L);
+        if (source_type != "none")
+            reaction_RK4_update_with_source(u, dt, r, t, L, source_type);
+        else
+            reaction_RK4_update(u, dt, r);
+        diffusion_RK4_step(u, dt/2.0, D, L);
+    }
+    else if (model_type == "grayscott") {
+        MDArray2D<double> u0 = u;
+        MDArray2D<double> v0 = v;
+
+        diffusion_RK4_step(u0, dt/2.0, D, L);
+        diffusion_RK4_step(v0, dt/2.0, D, L);
+
+        const double F = 0.04;
+        const double k = 0.06;
+
+        for (int i = 0; i < u.rows(); ++i)
+            for (int j = 0; j < u.cols(); ++j) {
+                double uu = u0(i,j), vv = v0(i,j);
+                double uvv = uu * vv * vv;
+                u(i,j) = uu + dt * (-uvv + F * (1.0 - uu));
+                v(i,j) = vv + dt * ( uvv - (F + k) * vv);
+            }
+
+        diffusion_RK4_step(u, dt/2.0, D, L);
+        diffusion_RK4_step(v, dt/2.0, D, L);
+    }
+    else {
+        std::cerr << "Unknown model_type in RK4 step: " << model_type << "\n";
+    }
+}

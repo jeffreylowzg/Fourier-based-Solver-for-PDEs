@@ -18,6 +18,12 @@ void spectral_BE_step_2d_convection(MDArray2D<double>& u,
                                     double vx, double vy,
                                     double L);
 
+// FULL spectral RK4 solver for the 2D convection–diffusion equation
+void full_spectral_RK4_step_2d_convection(MDArray2D<double>& u,
+                                          double dt, double D,
+                                          double vx, double vy,
+                                          double L);
+
 void saveSolution2D(const MDArray2D<double>& u, const std::string& filename, double dx, double time);
 
 

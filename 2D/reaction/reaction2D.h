@@ -48,6 +48,21 @@ void reactiondiffusion_BE_step_2d_source(MDArray2D<double>& u,
                                          double current_time,
                                          const std::string& source_type);
 
+void reactiondiffusion_RK4_step_2d_combined(MDArray2D<double>& u,
+                                            MDArray2D<double>& v,
+                                            double dt, double D, double r,
+                                            double L, double t,
+                                            const std::string& source_type,
+                                            const std::string& model_type);
+
+void reactiondiffusion_BE_step_2d_combined(MDArray2D<double>& u,
+                                           MDArray2D<double>& v,
+                                           double dt, double D, double r,
+                                           double L, double t,
+                                           const std::string& source_type,
+                                           const std::string& model_type);
+
+
 //-------------------------------------------------------------------
 // Save the 2D solution to a file (for visualization).
 //-------------------------------------------------------------------
