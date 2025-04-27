@@ -2,7 +2,7 @@
 CXX = g++
 
 # Project Name
-PROJ = heat_solver
+PROJ = convergence_test
 
 # Compiler flags
 CXXFLAGS = -std=c++11 -Wall -Wextra -O3

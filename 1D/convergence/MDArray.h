@@ -25,22 +25,22 @@ public:
     size_t size() const { return size_; }
 
     MDArray<T> operator-(MDArray<T> rhs) const {
-      assert(size_ == rhs.size_);
-      MDArray<T> res(size_);
-      for (size_t i = 0; i < size_; i++) {
-        res[i] = (*this)[i] - rhs[i];
-      }
-      return res;
+        assert(size_ == rhs.size_);
+        MDArray<T> res(size_);
+        for (size_t i = 0; i < size_; i++) {
+            res[i] = (*this)[i] - rhs[i];
+        }
+        return res;
     }
 
     double euclidian_norm() const {
-      double res = 0;
-      for (size_t i = 0; i < size_; i++) {
-        double val = (*this)[i];
-        res += val * val;
-      }
-      // normalize result by num elements
-      return res / (size_);
+        double res = 0;
+        for (size_t i = 0; i < size_; i++) {
+            double val = (*this)[i];
+            res += val * val;
+        }
+        // normalize result by num elements
+        return res / (size_);
     }
 
     // Helper to get pointer to underlying data (useful for FFTW)

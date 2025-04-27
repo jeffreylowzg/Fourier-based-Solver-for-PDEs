@@ -6,6 +6,7 @@ CXXFLAGS = -std=c++11 -Wall -Wextra -O3
 
 # Libraries (link FFTW)
 LIBS = -lfftw3
+LIBS += -I/home/jrohozen/fftw3/include -L/home/jrohozen/fftw3/lib
 
 # Executable names
 TARGET = heat_solver2d.exe
