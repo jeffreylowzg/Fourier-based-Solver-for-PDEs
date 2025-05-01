@@ -1,3 +1,7 @@
+/** heat_solver.h
+ * 
+ * header file for 1D MDArray
+ */
 #ifndef MDARRAY_H
 #define MDARRAY_H
 
@@ -24,6 +28,7 @@ public:
     }
     size_t size() const { return size_; }
 
+    // subtract rhs from this MDArray and return that result
     MDArray<T> operator-(MDArray<T> rhs) const {
         assert(size_ == rhs.size_);
         MDArray<T> res(size_);
@@ -33,6 +38,7 @@ public:
         return res;
     }
 
+    // calculate the euclidian norm of MDArray
     double euclidian_norm() const {
         double res = 0;
         for (size_t i = 0; i < size_; i++) {

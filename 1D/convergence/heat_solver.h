@@ -1,3 +1,8 @@
+/** heat_solver.h
+ * 
+ * header file for 1D BE and RK4 code for testing convergence
+ */
+
 #ifndef HEAT_SOLVER_H
 #define HEAT_SOLVER_H
 

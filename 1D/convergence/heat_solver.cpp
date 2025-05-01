@@ -1,4 +1,8 @@
-// heat_solver.cpp
+/** heat_solver.cpp
+ * 
+ * This file contains the 1D BE and RK4 code for testing convergence
+ */
+
 #include "heat_solver.h"
 #include <iostream>
 #include <fstream>
@@ -25,7 +29,7 @@ void saveSolution(const MDArray<double>& u, const std::string& filename, double 
 }
 
 //-------------------------------------------------------------------
-// Spectral step using RK4 integration (forward solver)
+// Spectral steps using RK4 integration (forward solver)
 //-------------------------------------------------------------------
 void spectral_RK4_steps(MDArray<double>& u, double dt, double alpha, double L, int steps) {
     int n = u.size();
