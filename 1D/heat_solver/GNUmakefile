@@ -1,14 +1,7 @@
-# Compiler
-CXX = g++
+include ../../Make.include
 
 # Project Name
 PROJ = heat_solver
-
-# Compiler flags
-CXXFLAGS = -std=c++11 -Wall -Wextra -O3
-
-# Libraries (link FFTW)
-LIBS = -lfftw3
 
 # Executable name
 TARGET = $(PROJ).exe
@@ -24,14 +17,11 @@ $(TARGET): $(SOURCES)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SOURCES) $(LIBS)
 
 # Run the simulation
-# Optionally run with the "spectral" argument to use the FFTW spectral method:
-#   ./heat_solver.exe spectral
 run: $(TARGET)
-	./$(TARGET)
+	./$(TARGET) spectral sine
 
 # Clean the executable and output data
 clean:
-	rm -f $(TARGET)
-	rm -rf data
+	rm -rf $(TARGET) data
 
 .PHONY: all run clean

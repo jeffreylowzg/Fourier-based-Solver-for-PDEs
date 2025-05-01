@@ -1,11 +1,4 @@
-# Compiler
-CXX = g++
-
-# Compiler flags
-CXXFLAGS = -std=c++11 -Wall -Wextra -O3
-
-# Libraries (link FFTW)
-LIBS = -lfftw3
+include ../../Make.include
 
 # Executable names
 TARGET = reaction2D.exe
@@ -27,7 +20,6 @@ run: $(TARGET)
 
 # Clean the executables and output data
 clean:
-	rm -f $(TARGET)
-	rm -rf data
+	rm -rf $(TARGET) data
 
 .PHONY: all run clean
