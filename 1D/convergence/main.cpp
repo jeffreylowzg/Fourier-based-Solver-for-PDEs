@@ -22,7 +22,7 @@
  * and the end time of the simulation.
  * 
  * If you want to change how many iterations of tests to run, you can change the
- * loop on line 
+ * value of num_tests
  */
 
 #include <iostream>

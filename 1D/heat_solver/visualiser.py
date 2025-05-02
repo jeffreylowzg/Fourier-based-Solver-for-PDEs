@@ -1,3 +1,6 @@
+# python visualizer
+# reads from the data directory and uses matplotlib to visualize the simulation
+
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D

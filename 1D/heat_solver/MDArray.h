@@ -1,3 +1,8 @@
+/** MDArray.h
+ * 
+ * header file for 1D MDArray
+ */
+
 #ifndef MDARRAY_H
 #define MDARRAY_H
 
