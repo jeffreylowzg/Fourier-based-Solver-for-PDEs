@@ -1,3 +1,8 @@
+/** MDArray2D.h
+ * 
+ * header file 2D MDArray
+ */
+
 #ifndef MDARRAY2D_H
 #define MDARRAY2D_H
 

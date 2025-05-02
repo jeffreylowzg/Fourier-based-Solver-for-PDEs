@@ -1,3 +1,5 @@
+# python file for comparing full and pseudo spectral results
+
 import numpy as np
 import matplotlib.pyplot as plt
 import glob, os

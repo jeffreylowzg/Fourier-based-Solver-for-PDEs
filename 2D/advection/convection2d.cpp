@@ -1,3 +1,9 @@
+/** convection2d.cpp
+ * 
+ * This file contains the implementation for 2D convection using full-spectral
+ * and pseudo-spectral methods.
+ */
+
 #include "convection2d.h"
 #include <fstream>
 #include <sstream>
@@ -6,7 +12,7 @@
 #include <fftw3.h>
 
 //-------------------------------------------------------------------
-// Spectral RK4 step for the 2D convection–diffusion equation
+// Spectral RK4 step for the 2D convection-diffusion equation
 //-------------------------------------------------------------------
 void spectral_RK4_step_2d_convection(MDArray2D<double>& u,
                                      double dt, double D,
@@ -84,7 +90,7 @@ void spectral_RK4_step_2d_convection(MDArray2D<double>& u,
 }
 
 //-------------------------------------------------------------------
-// Spectral Backward Euler step for the 2D convection–diffusion equation
+// Spectral Backward Euler step for the 2D convection-diffusion equation
 //-------------------------------------------------------------------
 void spectral_BE_step_2d_convection(MDArray2D<double>& u,
                                     double dt, double D,
@@ -151,7 +157,7 @@ void spectral_BE_step_2d_convection(MDArray2D<double>& u,
 }
 
 //-------------------------------------------------------------------
-// FULL Spectral RK4 step for the 2D convection–diffusion equation
+// FULL Spectral RK4 step for the 2D convection-diffusion equation
 //-------------------------------------------------------------------
 void full_spectral_RK4_step_2d_convection(MDArray2D<double>& u,
                                           double dt, double D,

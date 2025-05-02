@@ -1,24 +1,29 @@
+/** convection2d.h
+ * 
+ * header file for 2D spectral convection solver
+ */
+
 #ifndef SPECTRAL_ADVECTION_DIFFUSION_H
 #define SPECTRAL_ADVECTION_DIFFUSION_H
 
 #include <string>
 #include "MDArray2D.h"
 
-// Spectral RK4 solver for the 2D convection–diffusion (now "convection")
-// equation: u_t + v·grad(u) = D ∇²u, with imposed Dirichlet boundaries.
+// Spectral RK4 solver for 2D convection
+// equation: u_t + v (dot) grad u = D grad^2 u, with imposed Dirichlet boundaries.
 void spectral_RK4_step_2d_convection(MDArray2D<double>& u,
                                      double dt, double D,
                                      double vx, double vy,
                                      double L);
 
-// Spectral Backward Euler solver for the 2D convection–diffusion equation,
+// Spectral Backward Euler solver for the 2D convection-diffusion equation,
 // with imposed Dirichlet boundaries.
 void spectral_BE_step_2d_convection(MDArray2D<double>& u,
                                     double dt, double D,
                                     double vx, double vy,
                                     double L);
 
-// FULL spectral RK4 solver for the 2D convection–diffusion equation
+// FULL spectral RK4 solver for the 2D convection-diffusion equation
 void full_spectral_RK4_step_2d_convection(MDArray2D<double>& u,
                                           double dt, double D,
                                           double vx, double vy,

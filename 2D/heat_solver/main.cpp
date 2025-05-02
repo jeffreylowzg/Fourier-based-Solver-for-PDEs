@@ -15,7 +15,7 @@
  *
  * <initial_condition> is the initial condition type:
  *  - sine
- *  - gaussian:
+ *  - gaussian
  *  - zero
  *
  * <source_type> is the source term type:
@@ -29,12 +29,12 @@
  * as "solution_<step>.dat" every save_interval steps.
  *
  * You can vary several parameters at the top of the main function
- *   - somain size: L
- *   - grid points: n
- *   - alpha
- *   - dt (time step)
- *   - total steps: 50000
- *   - save interval: every 100 steps
+ *  - L (domain size)
+ *  - n (grid points)
+ *  - alpha (heat diffusion constant)
+ *  - dt (time step)
+ *  - steps (number of timesteps to simulate)
+ *  - save_interval (how often to save results)
  */
 
 
@@ -47,6 +47,7 @@
 
 int main(int argc, char* argv[]) {
 
+    // simulation parameters
     const double L            = 1.0;
     const size_t n            = 101;
     const double alpha        = 0.01;

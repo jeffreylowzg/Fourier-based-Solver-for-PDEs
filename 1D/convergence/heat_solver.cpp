@@ -45,7 +45,7 @@ void spectral_RK4_steps(MDArray<double>& u, double dt, double alpha, double L, i
     fftw_execute(forward);
     fftw_destroy_plan(forward);
 
-    // For each Fourier mode, apply RK4 to solve: dŪ/dt = -alpha * k^2 * Ū.
+    // For each Fourier mode, apply RK4 to solve: dU_hat/dt = -alpha * k^2 * U_hat.
     for (int step = 0; step < steps; step++) {
       for (int k = 0; k < n/2 + 1; k++) {
           double k_val = (2.0 * M_PI * k) / L;
@@ -116,7 +116,7 @@ void spectral_BE_steps(MDArray<double>& u, double dt, double alpha, double L, in
 
     for (int step = 0; step < steps; step++) {
       // Update each Fourier mode using backward Euler:
-      // (1 + dt*alpha*k^2) * Ū^(n+1) = Ū^(n)  =>  Ū^(n+1) = Ū^(n) / (1 + dt*alpha*k^2)
+      // (1 + dt*alpha*k^2) * U_hat^(n+1) = U_hat^(n)  =>  U_hat^(n+1) = U_hat^(n) / (1 + dt*alpha*k^2)
       for (int k = 0; k < n/2 + 1; k++) {
           double k_val = (2.0 * M_PI * k) / L;
           double factor = 1.0 / (1.0 + alpha * k_val * k_val * dt);

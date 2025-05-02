@@ -1,3 +1,39 @@
+/** main.cpp
+ * 
+ * main file for 2D convection solver with full and pseudo spectral methods.
+ * It can run with backward Euler or RK4 and three different initial conditions.
+ * Additionally, you can compare the full and pseudo RK4 results.
+ *
+ * You can run it with
+ *   ./convection2d.exe <method> <initial_condition>
+ *
+ * Both arguments are required
+ * 
+ * <method> is the method to use. The options are:
+ *  - spectral_rk4 // pseudo
+ *  - spectral_be  // pseudo
+ *  - full_spectral_rk4 // full
+ *  - compare // runs both pseudo and full and saves results from both
+ * 
+ * <initial_condition> is the initial condition type:
+ *  - sine
+ *  - gaussian
+ *  - disk
+ *
+ * When run, this file creates a data directory for file outputs. Frames are
+ * saved every save_interval steps.
+ *
+ * You can vary several parameters at the top of the main function
+ *  - L (domain size)
+ *  - n (grid size - n x n)
+ *  - D (diffusion coefficient)
+ *  - vx (velocity in x direction)
+ *  - vy (velocity in y direction)
+ *  - dt (time step)
+ *  - steps (number of timesteps to simulate)
+ *  - save_interval (how often to save results)
+ */
+
 #include <iostream>
 #include <cmath>
 #include <sstream>
@@ -5,6 +41,18 @@
 #include "convection2d.h"
 
 int main(int argc, char* argv[]) {
+
+    // simulation parameters
+    const double L = 1.0;        // Domain size
+    const size_t n = 128;        // Grid size (n x n)
+    const double D = 0.01;       // Diffusion coefficient
+    const double vx = 1.0;       // Velocity in x
+    const double vy = 0.5;       // Velocity in y
+    const double dt = 0.0001;    // Time step
+    const size_t steps = 50000;  // Number of steps
+    const size_t save_interval = 100; // Save every N steps
+
+
     // Expect two command-line arguments: method and initial condition
     if (argc < 3) {
             std::cerr << "Usage: " << argv[0]
@@ -16,16 +64,7 @@ int main(int argc, char* argv[]) {
     std::string method = argv[1];
     std::string ic_type = argv[2];
 
-    // Simulation parameters
-    const double L = 1.0;        // Domain size
-    const size_t n = 128;        // Grid size (n x n)
     const double dx = L / n;     // Grid spacing
-    const double D = 0.01;       // Diffusion coefficient
-    const double vx = 1.0;       // Velocity in x
-    const double vy = 0.5;       // Velocity in y
-    const double dt = 0.0001;    // Time step
-    const size_t steps = 50000;  // Number of steps
-    const size_t save_interval = 100; // Save every N steps
 
     // Create output directory
     mkdir("data", 0777);
@@ -129,6 +168,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    std::cout << "2D advection–diffusion simulation complete." << std::endl;
+    std::cout << "2D advection-diffusion simulation complete." << std::endl;
     return 0;
 }
