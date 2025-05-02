@@ -1,3 +1,6 @@
+# python visualizer
+# reads from the data directory and uses matplotlib to visualize the simulation
+
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -10,7 +13,7 @@ files = sorted(glob.glob("data/solution_*.dat"),
 if not files:
     raise RuntimeError("No solution files found")
 
-# 1) Pre–scan to find global heat extrema:
+# 1) Pre-scan to find global heat extrema:
 global_min = np.inf
 global_max = -np.inf
 for fn in files:
@@ -23,7 +26,7 @@ for fn in files:
 fig = plt.figure()
 ax  = fig.add_subplot(111, projection='3d')
 ax.set_xlabel("x")
-ax.set_ylabel("y")    # call it “y” rather than “z”
+ax.set_ylabel("y")    # call it "y" rather than "z"
 ax.set_zlabel("Heat")
 title = ax.set_title("")
 

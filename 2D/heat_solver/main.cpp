@@ -1,7 +1,43 @@
-// main.cpp  
-// Updated to accept a 4th argument selecting the source‐term profile.
-//
-// Originally from main.cpp :contentReference[oaicite:8]{index=8}&#8203;:contentReference[oaicite:9]{index=9}
+/** main.cpp
+ * 
+ * main file for 2D heat equation solver. Solver can use either finite difference
+ * or pseudo-spectral methods. It allows for various initial conditions and
+ * source terms.
+ *
+ * You can run it with
+ *   ./heat_solver2d.exe <method> <initial_condition> <source_type>
+ *
+ * All three arguments are required
+ * <method> is the numerical method to use:
+ *  - fd
+ *  - spectral_rk4
+ *  - spectral_be
+ *
+ * <initial_condition> is the initial condition type:
+ *  - sine
+ *  - gaussian:
+ *  - zero
+ *
+ * <source_type> is the source term type:
+ *  - none
+ *  - gaussian_pulse
+ *  - standing_wave
+ *  - traveling_gaussian
+ *  - pulsed_ring
+ *
+ * When run, this file creates a data directory for file outputs. Frames are saved
+ * as "solution_<step>.dat" every save_interval steps.
+ *
+ * You can vary several parameters at the top of the main function
+ *   - somain size: L
+ *   - grid points: n
+ *   - alpha
+ *   - dt (time step)
+ *   - total steps: 50000
+ *   - save interval: every 100 steps
+ */
+
+
 #include <iostream>
 #include <cmath>
 #include <sstream>
@@ -10,6 +46,14 @@
 #include "heat_solver2d.h"
 
 int main(int argc, char* argv[]) {
+
+    const double L            = 1.0;
+    const size_t n            = 101;
+    const double alpha        = 0.01;
+    const double dt           = 0.0001;
+    const size_t steps        = 50000;
+    const size_t save_interval= 100;
+
     if (argc < 4) {
         std::cerr << "Usage: " << argv[0]
                   << " <fd|spectral_rk4|spectral_be>"
@@ -25,13 +69,7 @@ int main(int argc, char* argv[]) {
     std::string source_type = argv[3];
     bool include_source     = (source_type != "none");
 
-    const double L            = 1.0;
-    const size_t n            = 101;
     const double dx           = L / (n - 1);
-    const double alpha        = 0.01;
-    const double dt           = 0.0001;
-    const size_t steps        = 50000;
-    const size_t save_interval= 100;
 
     mkdir("data", 0777);
     MDArray2D<double> u(n,n);
@@ -67,7 +105,7 @@ int main(int argc, char* argv[]) {
 
     saveSolution2D(u, "solution_0.dat", dx, 0.0);
 
-    // Time‐integration
+    // Time-integration
     for (size_t step=1; step<=steps; step++) {
         double t = step*dt;
 

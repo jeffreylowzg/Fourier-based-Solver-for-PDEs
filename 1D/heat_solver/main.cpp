@@ -1,7 +1,7 @@
 /** main.cpp
  * 
  * This is the main file for running a 1D heat equation simulation and writing the
- * output to a file.
+ * output to a file. It uses the pseudo-spectral method to solve
  * 
  * The simulation steps an initial heat condition forward in time using RK4.
  * You can choose the finite difference method or spectral method and the initial

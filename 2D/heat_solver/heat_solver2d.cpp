@@ -1,6 +1,19 @@
-// heat_solver2d.cpp
-// Adapted to support selectable source‐term profiles.
-// Original structure and style preserved.
+/*
+ * heat_solver2d.cpp
+ * Adapted to support selectable source-term profiles.
+ * Original structure and style preserved.
+ *
+ * This code uses the pseudo-spectral method to solve with source terms
+ * The source terms you can use are:
+ *  - gaussian pulse
+ *  - standing wave
+ *  - traveling gaussian
+ *  - pulsed ring
+ * 
+ * You can use spectral backward Euler or RK4
+ * Or you can use finite difference RK4
+ * 
+ */
 
 #include "heat_solver2d.h"
 #include <fstream>
