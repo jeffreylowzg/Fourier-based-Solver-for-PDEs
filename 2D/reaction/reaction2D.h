@@ -1,3 +1,8 @@
+/** reactopm2D.h
+ * 
+ * header file for 2D reaction
+ */
+
 #ifndef REACTION_DIFFUSION_H
 #define REACTION_DIFFUSION_H
 
@@ -5,7 +10,7 @@
 #include "MDArray2D.h"
 
 //-------------------------------------------------------------------
-// Reaction–Diffusion solvers using Strang splitting.
+// Reaction-Diffusion solvers using Strang splitting.
 // Two methods are provided:
 //  1. reactiondiffusion_RK4_step_2d: spectral RK4 for diffusion,
 //     RK4 for reaction (no source).
@@ -13,7 +18,7 @@
 //     explicit Euler for reaction (no source).
 //
 // The PDE solved is:
-//    u_t = D ∇²u + r u (1 - u)
+//    u_t = D grad^2 u + r u (1 - u)
 // with homogeneous Dirichlet boundary conditions.
 //-------------------------------------------------------------------
 void reactiondiffusion_RK4_step_2d(MDArray2D<double>& u,
@@ -29,8 +34,8 @@ void reactiondiffusion_BE_step_2d(MDArray2D<double>& u,
                                   double L);
 
 //-------------------------------------------------------------------
-// Strang‐splitting solvers with selectable source term S(x,y,t).
-// Pass the current time and a source‐type string.
+// Strang-splitting solvers with selectable source term S(x,y,t).
+// Pass the current time and a source-type string.
 //-------------------------------------------------------------------
 void reactiondiffusion_RK4_step_2d_source(MDArray2D<double>& u,
                                           double dt,

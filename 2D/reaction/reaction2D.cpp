@@ -1,6 +1,31 @@
-// reaction2D.cpp
-// Adapted to support selectable source‐term profiles.
-// Original structure and style preserved.
+/** reaction2D.cpp
+ * 
+ * This file contains the implementation for 2D reaction using pseudo-spectral
+ * methods.
+ * 
+ * Several model types, initial conditions, and source terms are supported:
+ * 
+ * model types:
+ *  - logistic
+ *  - grayscott
+ * 
+ * initial conditions:
+ *  - gaussian
+ *  - gaussian16
+ *  - zero
+ * 
+ * source terms:
+ *  - none
+ *  - gaussian_pulse
+ *  - standing_wave
+ *  - traveling_gaussian
+ *  - pulsed_ring
+ * 
+ * The solver works by using Strang splitting:
+ *  1. diffusion step with dt/2
+ *  2. reaction step with dt
+ *  3. diffusion step with dt/2
+ */
 
 #include "reaction2D.h"
 #include <algorithm>      // for std::max, std::min
@@ -13,7 +38,7 @@
 #include <string>
 
 //-------------------------------------------------------------------
-// Source term definitions (standing_wave clamped ≥0)
+// Source term definitions (standing_wave clamped >= 0)
 //-------------------------------------------------------------------
 double source_term(double x, double y, double t,
                    double L, const std::string& source_type) {
@@ -198,7 +223,7 @@ static void reaction_RK4_update(MDArray2D<double>& u,
 }
 
 //-------------------------------------------------------------------
-// Reaction+source update using RK4, then clamp u∈[0,1]
+// Reaction+source update using RK4, then clamp u in range [0,1]
 //-------------------------------------------------------------------
 static void reaction_RK4_update_with_source(MDArray2D<double>& u,
                                             double dt, double r,
@@ -265,7 +290,7 @@ void reactiondiffusion_BE_step_2d(MDArray2D<double>& u,
                                   double dt, double D, double r,
                                   double L) {
     diffusion_BE_step(u, dt/2.0, D, L);
-    // no‐source Euler reaction
+    // no-source Euler reaction
     {
         int n = static_cast<int>(u.rows());
         int m = static_cast<int>(u.cols());
@@ -344,8 +369,8 @@ void reactiondiffusion_BE_step_2d_combined(MDArray2D<double>& u,
         const double F = 0.04;
         const double k = 0.06;
 
-        for (int i = 0; i < u.rows(); ++i)
-            for (int j = 0; j < u.cols(); ++j) {
+        for (int i = 0; i < (int)u.rows(); ++i)
+            for (int j = 0; j < (int)u.cols(); ++j) {
                 double uu = u0(i,j), vv = v0(i,j);
                 double uvv = uu * vv * vv;
                 u(i,j) = uu + dt * (-uvv + F * (1.0 - uu));
@@ -384,8 +409,8 @@ void reactiondiffusion_RK4_step_2d_combined(MDArray2D<double>& u,
         const double F = 0.04;
         const double k = 0.06;
 
-        for (int i = 0; i < u.rows(); ++i)
-            for (int j = 0; j < u.cols(); ++j) {
+        for (int i = 0; i < (int)u.rows(); ++i)
+            for (int j = 0; j < (int)u.cols(); ++j) {
                 double uu = u0(i,j), vv = v0(i,j);
                 double uvv = uu * vv * vv;
                 u(i,j) = uu + dt * (-uvv + F * (1.0 - uu));

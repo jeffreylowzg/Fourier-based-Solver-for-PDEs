@@ -1,3 +1,49 @@
+/** main.cpp
+ * 
+ * main file for 2D reaction solver.
+ * It can run with pseudo-spectral backward Euler or RK4. There are two
+ * reaction models, three initial conditions, and five source terms.
+ * 
+ * The solver works by using Strang splitting.
+ *
+ * You can run with:
+ *   ./reaction2D.exe <method> <model> <initial_condition> <source_term>
+ *
+ * All arguments are required
+ * 
+ * <method> is the method to use. The options are:
+ *  - spectral_rk4 // pseudo-spectral
+ *  - spectral_be  // pseudo-spectral
+ * 
+ * <model> is the reaction model to use:
+ *  - logistic
+ *  - grayscott
+ * 
+ * <initial_condition> is the initial condition type:
+ *  - gaussian
+ *  - gaussian16
+ *  - zero
+ * 
+ * <source_term>
+ *  - none
+ *  - gaussian_pulse
+ *  - standing_wave
+ *  - traveling_gaussian
+ *  - pulsed_ring
+ *
+ * When run, this file creates a data directory for file outputs. Frames are
+ * saved every save_interval steps.
+ *
+ * You can vary several parameters at the top of the main function
+ *  - L (domain size)
+ *  - n (grid size - n x n)
+ *  - D (diffusion coefficient)
+ *  - r (logistic model coefficient)
+ *  - dt (time step)
+ *  - steps (number of timesteps to simulate)
+ *  - save_interval (how often to save results)
+ */
+
 #include <iostream>
 #include <cmath>
 #include <sstream>
@@ -6,9 +52,17 @@
 #include "reaction2D.h"
 
 int main(int argc, char* argv[]) {
-    // Usage: <program> <spectral_rk4|spectral_be> <logistic|grayscott>
-    //        <gaussian|gaussian16|zero> <none|gaussian_pulse|...>
 
+    // simulation parameters
+    const double L             = 1.0;
+    const size_t n             = 128;
+    const double D             = 0.01;
+    const double r             = 1.0;
+    const double dt            = 0.0001;
+    const size_t steps         = 50000;
+    const size_t save_interval = 100;
+
+    // usage
     if (argc < 5) {
         std::cerr << "Usage: " << argv[0]
                   << " <spectral_rk4|spectral_be>"
@@ -25,15 +79,7 @@ int main(int argc, char* argv[]) {
     std::string source_type = argv[4];
     bool include_source     = (source_type != "none");
 
-    // Simulation parameters
-    const double L             = 1.0;
-    const size_t n             = 128;
     const double dx            = L / n;
-    const double D             = 0.01;
-    const double r             = 1.0;
-    const double dt            = 0.0001;
-    const size_t steps         = 50000;
-    const size_t save_interval = 100;
 
     // Create output directory
     mkdir("data", 0777);
