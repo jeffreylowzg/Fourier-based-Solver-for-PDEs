@@ -6,3 +6,6 @@
 *.exe
 *mp4
 .vscode
+html/
+latex/
+Doxyfile.bak
