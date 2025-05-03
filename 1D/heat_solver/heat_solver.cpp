@@ -3,11 +3,7 @@
  * \file heat_solver.cpp
  * \brief this file contains implementations for FD and spectral methods for solving the heat equation
  */
- 
-/** heat_solver.cpp
- * this file contains implementations for FD and spectral methods for solving
- * the heat equation
- */ 
+
 #include "heat_solver.h"
 #include <iostream>
 #include <fstream>

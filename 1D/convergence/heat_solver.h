@@ -11,11 +11,6 @@
  * \brief Header for 1D heat equation solver.
  */
 
-/** heat_solver.h
- * 
- * Header file for 1D BE and RK4 code for testing convergence
- */
-
 #ifndef HEAT_SOLVER_H
 #define HEAT_SOLVER_H
 

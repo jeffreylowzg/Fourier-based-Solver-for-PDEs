@@ -11,11 +11,6 @@
  * \brief Header for 1D heat equation solver.
  */
 
-/** heat_solver.h
- * 
- * header file for 1D heat solver
- */
-
 #ifndef HEAT_SOLVER_H
 #define HEAT_SOLVER_H
 

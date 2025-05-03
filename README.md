@@ -6,7 +6,7 @@ Authors:
 
 This directory contains code for solving heat equations with pseudo-spectral and full-spectral methods in 1D and 2D. In 2D, there is code to step forward systems with advection and with source terms. We use Backward Euler and RK4 to step the system forward. Additionally, our presentation slides are included in the directory.
 
-File structure:
+Directory structure:
 
 1D  
  - convergence  

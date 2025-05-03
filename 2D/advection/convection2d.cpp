@@ -1,7 +1,8 @@
-/** convection2d.cpp
- * 
- * This file contains the implementation for 2D convection using full-spectral
- * and pseudo-spectral methods.
+/**
+ * \ingroup convection_2d
+ * \file convection2d.cpp
+ * \brief This file contains the implementation for 2D convection using
+ * full-spectral and pseudo-spectral methods.
  */
 
 #include "convection2d.h"
@@ -11,9 +12,13 @@
 #include <cmath>
 #include <fftw3.h>
 
-//-------------------------------------------------------------------
-// Spectral RK4 step for the 2D convection-diffusion equation
-//-------------------------------------------------------------------
+/// @brief Spectral RK4 step for the 2D convection-diffusion equation
+/// @param u input
+/// @param dt timestep
+/// @param D diffusion constant
+/// @param vx velocity field x
+/// @param vy velocity field y
+/// @param L domain length
 void spectral_RK4_step_2d_convection(MDArray2D<double>& u,
                                      double dt, double D,
                                      double vx, double vy,
@@ -89,9 +94,14 @@ void spectral_RK4_step_2d_convection(MDArray2D<double>& u,
     fftw_free(out);
 }
 
-//-------------------------------------------------------------------
-// Spectral Backward Euler step for the 2D convection-diffusion equation
-//-------------------------------------------------------------------
+
+/// @brief Spectral Backward Euler step for the 2D convection-diffusion equation
+/// @param u input
+/// @param dt timestep
+/// @param D diffusion constant
+/// @param vx velocity field x
+/// @param vy velocity field y
+/// @param L domain length
 void spectral_BE_step_2d_convection(MDArray2D<double>& u,
                                     double dt, double D,
                                     double vx, double vy,
@@ -156,9 +166,13 @@ void spectral_BE_step_2d_convection(MDArray2D<double>& u,
     fftw_free(out);
 }
 
-//-------------------------------------------------------------------
-// FULL Spectral RK4 step for the 2D convection-diffusion equation
-//-------------------------------------------------------------------
+/// @brief FULL Spectral RK4 step for the 2D convection-diffusion equation
+/// @param u input
+/// @param dt timestep
+/// @param D diffusion constant
+/// @param vx velocity field x
+/// @param vy velocity field y
+/// @param L domain length
 void full_spectral_RK4_step_2d_convection(MDArray2D<double>& u,
                                           double dt, double D,
                                           double vx, double vy,
@@ -300,9 +314,12 @@ void full_spectral_RK4_step_2d_convection(MDArray2D<double>& u,
     fftw_free(temp);
 }
 
-//-------------------------------------------------------------------
-// Save the 2D solution to a file
-//-------------------------------------------------------------------
+
+/// @brief Save the 2D solution to a file
+/// @param u input
+/// @param filename file to save to
+/// @param dx grid step size
+/// @param time current time
 void saveSolution2D(const MDArray2D<double>& u, const std::string& filename, double dx, double time) {
     std::ofstream file("data/" + filename);
     if (!file.is_open()) {

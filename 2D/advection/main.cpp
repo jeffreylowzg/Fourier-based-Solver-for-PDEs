@@ -1,4 +1,8 @@
-/** main.cpp
+/** 
+ * 
+ * \ingroup convection_2d
+ * \file main.cpp
+ * \brief main file for convection simulation
  * 
  * main file for 2D convection solver with full and pseudo spectral methods.
  * It can run with backward Euler or RK4 and three different initial conditions.
