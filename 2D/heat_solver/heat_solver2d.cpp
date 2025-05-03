@@ -1,3 +1,9 @@
+/**
+ * \ingroup heat_solver_2d
+ * \file heat_solver2d.cpp
+ * \brief This file contains the implementation for 2D heat solver
+ */
+
 /** heat_solver2d.cpp
  *
  * This code uses the pseudo-spectral method to solve with source terms
@@ -20,9 +26,13 @@
 #include <string>
 #include <fftw3.h>
 
-//-------------------------------------------------------------------
-// Source term definitions
-//-------------------------------------------------------------------
+/// @brief Source term definitions
+/// @param x x position
+/// @param y y position
+/// @param t time
+/// @param L domain size
+/// @param source_type type of source
+/// @return source value at point (x,y)
 double source_term(double x, double y, double t, double L, const std::string& source_type) {
     double cx = 0.5 * L;
     double cy = 0.5 * L;
@@ -74,9 +84,12 @@ double source_term(double x, double y, double t, double L, const std::string& so
     return 0.0;
 }
 
-//-------------------------------------------------------------------
-// Compute 2D Laplacian using central differences (Dirichlet BC)
-//-------------------------------------------------------------------
+/// @brief Finite-difference methods (Dirichlet BC)
+/// @param u input
+/// @param i row
+/// @param j col
+/// @param dx grid spacing
+/// @return the 2D laplacian
 double laplacian2d(const MDArray2D<double>& u, size_t i, size_t j, double dx) {
     size_t rows = u.rows();
     size_t cols = u.cols();
@@ -88,9 +101,11 @@ double laplacian2d(const MDArray2D<double>& u, size_t i, size_t j, double dx) {
     return d2x + d2y;
 }
 
-//-------------------------------------------------------------------
-// RK4 (Explicit) integration step for 2D heat equation (finite-difference)
-//-------------------------------------------------------------------
+/// @brief rk4 step
+/// @param u input
+/// @param dt timestep
+/// @param dx grid spacing
+/// @param alpha diffusion coefficient
 void RK4_step_2d(MDArray2D<double>& u, double dt, double dx, double alpha) {
     size_t rows = u.rows();
     size_t cols = u.cols();
@@ -136,9 +151,11 @@ void RK4_step_2d(MDArray2D<double>& u, double dt, double dx, double alpha) {
             u(i,j) += dt / 6.0 * (k1(i,j) + 2.0*k2(i,j) + 2.0*k3(i,j) + k4(i,j));
 }
 
-//-------------------------------------------------------------------
-// Save the 2D solution to a file (suitable for visualization)
-//-------------------------------------------------------------------
+/// @brief Save solution for visualization
+/// @param u input
+/// @param filename file to write to 
+/// @param dx grid spacing
+/// @param time time of step
 void saveSolution2D(const MDArray2D<double>& u, const std::string& filename, double dx, double time) {
     std::ofstream file("data/" + filename);
     if (!file.is_open()) {
@@ -159,9 +176,11 @@ void saveSolution2D(const MDArray2D<double>& u, const std::string& filename, dou
     file.close();
 }
 
-//-------------------------------------------------------------------
-// Spectral RK4 step using FFTW (Forward integration in Fourier space)
-//-------------------------------------------------------------------
+/// @brief rk4 step
+/// @param u input
+/// @param dt timestep
+/// @param alpha diffusion coefficient
+/// @param L domain size
 void spectral_RK4_step_2d(MDArray2D<double>& u, double dt, double alpha, double L) {
     int n  = u.rows();
     int nc = n;
@@ -223,9 +242,11 @@ void spectral_RK4_step_2d(MDArray2D<double>& u, double dt, double alpha, double 
     fftw_free(out);
 }
 
-//-------------------------------------------------------------------
-// Spectral Backward Euler step using FFTW (Backward integration in Fourier space)
-//-------------------------------------------------------------------
+/// @brief be step
+/// @param u input
+/// @param dt timestep
+/// @param alpha diffusion coefficient
+/// @param L domain size
 void spectral_BE_step_2d(MDArray2D<double>& u, double dt, double alpha, double L) {
     int n  = u.rows();
     int nc = n;
@@ -269,10 +290,14 @@ void spectral_BE_step_2d(MDArray2D<double>& u, double dt, double alpha, double L
     fftw_free(out);
 }
 
-//-------------------------------------------------------------------
-// RK4 step for the 2D heat equation with a source term (finite-difference)
-//    u_t = alpha * Laplacian(u) + S(x,y,t)
-//-------------------------------------------------------------------
+/// @brief RK4 with source
+/// @param u input
+/// @param dt timestep
+/// @param dx grid spacing
+/// @param alpha diffusion coefficient
+/// @param t current time
+/// @param L domain size
+/// @param source_type the type of source
 void RK4_step_2d_source(MDArray2D<double>& u, double dt, double dx,
                         double alpha, double t, double L,
                         const std::string& source_type) {
@@ -337,9 +362,13 @@ void RK4_step_2d_source(MDArray2D<double>& u, double dt, double dx,
                      (k1(i,j) + 2.0*k2(i,j) + 2.0*k3(i,j) + k4(i,j));
 }
 
-//-------------------------------------------------------------------
-// Spectral RK4 step with source using FFTW.
-//-------------------------------------------------------------------
+/// @brief rk4 step with source
+/// @param u input
+/// @param dt timestep
+/// @param alpha diffusion coefficient
+/// @param L domain size
+/// @param t time
+/// @param source_type type of source
 void spectral_RK4_step_2d_source(MDArray2D<double>& u,
                                  double dt, double alpha,
                                  double L, double t,
@@ -366,9 +395,13 @@ void spectral_RK4_step_2d_source(MDArray2D<double>& u,
     u = u_diff;
 }
 
-//-------------------------------------------------------------------
-// Spectral Backward Euler step with source using FFTW.
-//-------------------------------------------------------------------
+/// @brief be step with source
+/// @param u input
+/// @param dt timestep
+/// @param alpha diffusion coefficient
+/// @param L domain size
+/// @param t time
+/// @param source_type type of source
 void spectral_BE_step_2d_source(MDArray2D<double>& u,
                                 double dt, double alpha,
                                 double L, double t,

@@ -1,8 +1,10 @@
-/** main.cpp
- * 
- * main file for 2D heat equation solver. Solver can use either finite difference
- * or pseudo-spectral methods. It allows for various initial conditions and
- * source terms.
+/** 
+ * \ingroup heat_solver_2d
+ * \file main.cpp
+ * \brief main file for 2D heat solver
+ *
+ * @details Solver can use either finite difference or pseudo-spectral methods.
+ * It allows for various initial conditions and source terms.
  *
  * You can run it with
  *   ./heat_solver2d.exe <method> <initial_condition> <source_type>
