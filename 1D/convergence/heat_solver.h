@@ -1,3 +1,16 @@
+/**
+ * \defgroup convergence_1d 1D Convergence
+ * \brief Functions related to 1D convergence tests.
+ *
+ * \ingroup one_d
+ */
+
+/**
+ * \ingroup convergence_1d
+ * \file heat_solver.h
+ * \brief Header for 1D heat equation solver.
+ */
+
 /** heat_solver.h
  * 
  * Header file for 1D BE and RK4 code for testing convergence

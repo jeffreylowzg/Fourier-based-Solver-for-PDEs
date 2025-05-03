@@ -1,3 +1,9 @@
+/**
+ * \ingroup convergence_1d
+ * \file main.cpp
+ * \brief Main file for testing 1D convergence.
+ */
+
 /** main.cpp
  * 
  * @brief This is the main file for testing convergence.

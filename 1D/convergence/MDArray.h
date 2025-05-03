@@ -1,3 +1,9 @@
+/**
+ * \ingroup convergence_1d
+ * \file MDArray.h
+ * \brief Header file to handle multi-dimensional array.
+ */
+
 /** MDArray.h
  * 
  * @brief Header file for 1D MDArray.

@@ -1,3 +1,9 @@
+/**
+ * \ingroup convergence_1d
+ * \file heat_solver.cpp
+ * \brief Solver for 1D heat equation.
+ */
+
 /** heat_solver.cpp
  * 
  * This file contains the 1D BE and RK4 code for testing convergence
