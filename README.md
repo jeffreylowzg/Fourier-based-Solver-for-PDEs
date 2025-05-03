@@ -28,3 +28,16 @@ Navigate to the solver you would like to try and run `make`. This will build the
 If you would like to try different settings (integrators, initial conditions, sources) run the executable and select from the settings it prints out.
 
 Each file has more information available at the top.
+
+## Doxygen
+Install doxygen
+
+```sudo apt install doxygen```
+
+In the root of this git run the following to generate the doxygen documentation
+
+```doxygen Doxyfile```
+
+Open the following file in html to view the generated documentation
+
+```Fourier-based-Solver-for-PDEs/html/index.html```
