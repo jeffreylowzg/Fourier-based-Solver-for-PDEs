@@ -4,8 +4,10 @@
  * \file main.cpp
  * \brief main file for convection simulation
  * 
- * main file for 2D convection solver with full and pseudo spectral methods.
- * It can run with backward Euler or RK4 and three different initial conditions.
+ * 
+ * @brief main file for 2D convection solver with full and pseudo spectral methods.
+ * 
+ * @details Can run with backward Euler or RK4 and three different initial conditions.
  * Additionally, you can compare the full and pseudo RK4 results.
  *
  * You can run it with

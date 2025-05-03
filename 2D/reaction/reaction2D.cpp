@@ -37,9 +37,13 @@
 #include <sys/stat.h>
 #include <string>
 
-//-------------------------------------------------------------------
-// Source term definitions (standing_wave clamped >= 0)
-//-------------------------------------------------------------------
+/// @brief Source term definitions (standing_wave clamped >= 0)
+/// @param x x position
+/// @param y y position
+/// @param t time
+/// @param L domain size
+/// @param source_type type of source
+/// @return source value
 double source_term(double x, double y, double t,
                    double L, const std::string& source_type) {
     double cx = 0.5 * L;
@@ -92,9 +96,8 @@ double source_term(double x, double y, double t,
     return 0.0;
 }
 
-//-------------------------------------------------------------------
-// Helper: Apply Dirichlet boundary conditions (u = 0 on boundary).
-//-------------------------------------------------------------------
+/// @brief dirichlet boundary conditions (u = 0 on boundary).
+/// @param u input
 static void applyBoundaryConditions(MDArray2D<double>& u) {
     int n = static_cast<int>(u.rows());
     for (int i = 0; i < n; i++) {
@@ -105,9 +108,11 @@ static void applyBoundaryConditions(MDArray2D<double>& u) {
     }
 }
 
-//-------------------------------------------------------------------
-// Diffusion update using spectral RK4 (diffusion only).
-//-------------------------------------------------------------------
+/// @brief Diffusion update using spectral RK4 (diffusion only).
+/// @param u input
+/// @param dt timestep
+/// @param D diffusion coefficient
+/// @param L domain size
 static void diffusion_RK4_step(MDArray2D<double>& u,
                                double dt, double D, double L) {
     int nc = static_cast<int>(u.rows());
@@ -159,9 +164,11 @@ static void diffusion_RK4_step(MDArray2D<double>& u,
     applyBoundaryConditions(u);
 }
 
-//-------------------------------------------------------------------
-// Diffusion update using spectral backward Euler (diffusion only).
-//-------------------------------------------------------------------
+/// @brief Diffusion update using spectral backward Euler (diffusion only).
+/// @param u input
+/// @param dt timestep
+/// @param D diffusion coefficient
+/// @param L domain size
 static void diffusion_BE_step(MDArray2D<double>& u,
                               double dt, double D, double L) {
     int nc = static_cast<int>(u.rows());
@@ -204,9 +211,10 @@ static void diffusion_BE_step(MDArray2D<double>& u,
     applyBoundaryConditions(u);
 }
 
-//-------------------------------------------------------------------
-// Reaction update using RK4 (no source)
-//-------------------------------------------------------------------
+/// @brief Reaction update using RK4 (no source)
+/// @param u input
+/// @param dt timestep
+/// @param r reaction coefficient
 static void reaction_RK4_update(MDArray2D<double>& u,
                                 double dt, double r) {
     int n = static_cast<int>(u.rows());
@@ -222,9 +230,13 @@ static void reaction_RK4_update(MDArray2D<double>& u,
       }
 }
 
-//-------------------------------------------------------------------
-// Reaction+source update using RK4, then clamp u in range [0,1]
-//-------------------------------------------------------------------
+/// @brief Reaction+source update using RK4, then clamp u in range [0,1]
+/// @param u input
+/// @param dt timestep
+/// @param r reaction coefficient
+/// @param t time
+/// @param L domain size
+/// @param src type of source
 static void reaction_RK4_update_with_source(MDArray2D<double>& u,
                                             double dt, double r,
                                             double t, double L,
@@ -254,27 +266,12 @@ static void reaction_RK4_update_with_source(MDArray2D<double>& u,
         u(i,j) = std::max(0.0, std::min(1.0, u(i,j)));
 }
 
-//-------------------------------------------------------------------
-// Explicit Euler reaction+source (unused now)
-//-------------------------------------------------------------------
-static void reaction_Euler_update_with_source(MDArray2D<double>& u,
-                                              double dt, double r,
-                                              double t, double L,
-                                              const std::string& src) {
-    int n = static_cast<int>(u.rows());
-    int m = static_cast<int>(u.cols());
-    double dx = L / n;
-    for (int i = 0; i < n; i++)
-      for (int j = 0; j < m; j++) {
-        double x = i*dx, y = j*dx, u0 = u(i,j);
-        double s  = source_term(x,y,t, L, src);
-        u(i,j) = u0 + dt*(r*u0*(1-u0) + s);
-      }
-}
-
-//-------------------------------------------------------------------
-// Strang split: RK4 diffusion + RK4 reaction (no source)
-//-------------------------------------------------------------------
+/// @brief Strang split: RK4 diffusion + RK4 reaction (no source)
+/// @param u input
+/// @param dt timestep
+/// @param D diffusion coefficient
+/// @param r reaction coefficient
+/// @param L domain size
 void reactiondiffusion_RK4_step_2d(MDArray2D<double>& u,
                                    double dt, double D, double r,
                                    double L) {
@@ -283,9 +280,12 @@ void reactiondiffusion_RK4_step_2d(MDArray2D<double>& u,
     diffusion_RK4_step(u, dt/2.0, D, L);
 }
 
-//-------------------------------------------------------------------
-// Strang split: BE diffusion + Euler reaction (no source)
-//-------------------------------------------------------------------
+/// @brief Strang split: BE diffusion + Euler reaction (no source)
+/// @param u input
+/// @param dt timestep
+/// @param D diffusion coefficient
+/// @param r reaction coefficient
+/// @param L domain size
 void reactiondiffusion_BE_step_2d(MDArray2D<double>& u,
                                   double dt, double D, double r,
                                   double L) {
@@ -301,9 +301,14 @@ void reactiondiffusion_BE_step_2d(MDArray2D<double>& u,
     diffusion_BE_step(u, dt/2.0, D, L);
 }
 
-//-------------------------------------------------------------------
-// Strang split + source: RK4 diffusion + RK4 reaction+source
-//-------------------------------------------------------------------
+/// @brief Strang split + source: RK4 diffusion + RK4 reaction+source
+/// @param u input
+/// @param dt timestep
+/// @param D diffusion coefficient
+/// @param r reaction coefficient
+/// @param L domain size
+/// @param current_time the current simulation time
+/// @param source_type type of source
 void reactiondiffusion_RK4_step_2d_source(MDArray2D<double>& u,
                                           double dt, double D, double r,
                                           double L, double t,
@@ -313,9 +318,14 @@ void reactiondiffusion_RK4_step_2d_source(MDArray2D<double>& u,
     diffusion_RK4_step(u, dt/2.0, D, L);
 }
 
-//-------------------------------------------------------------------
-// Strang split + source: BE diffusion + RK4 reaction+source
-//-------------------------------------------------------------------
+/// @brief Strang split + source: BE diffusion + RK4 reaction+source
+/// @param u input
+/// @param dt timestep
+/// @param D diffusion coefficient
+/// @param r reaction coefficient
+/// @param L domain size
+/// @param current_time the current simulation time
+/// @param source_type type of source
 void reactiondiffusion_BE_step_2d_source(MDArray2D<double>& u,
                                          double dt, double D, double r,
                                          double L, double t,
@@ -325,9 +335,11 @@ void reactiondiffusion_BE_step_2d_source(MDArray2D<double>& u,
     diffusion_BE_step(u, dt/2.0, D, L);
 }
 
-//-------------------------------------------------------------------
-// Save the 2D solution to a file.
-//-------------------------------------------------------------------
+/// @brief Save the 2D solution to a file (for visualization).
+/// @param u heat grid
+/// @param filename output file
+/// @param dx grid spacing
+/// @param time time in simulation
 void saveSolution2D(const MDArray2D<double>& u,
                     const std::string& filename,
                     double dx, double time) {
@@ -348,6 +360,16 @@ void saveSolution2D(const MDArray2D<double>& u,
     file.close();
 }
 
+/// @brief backward Euler reaction diffusion with model and source
+/// @param u reactant 1
+/// @param v reactant 2
+/// @param dt timestep
+/// @param D diffusion coefficient
+/// @param r reaction coefficient
+/// @param L domain size
+/// @param t time
+/// @param source_type type of source
+/// @param model_type type of model (logistic or grayscott)
 void reactiondiffusion_BE_step_2d_combined(MDArray2D<double>& u,
                                            MDArray2D<double>& v,
                                            double dt, double D, double r,
@@ -385,6 +407,16 @@ void reactiondiffusion_BE_step_2d_combined(MDArray2D<double>& u,
     }
 }
 
+/// @brief RK4 reaction diffusion with model and source
+/// @param u reactant 1
+/// @param v reactant 2
+/// @param dt timestep
+/// @param D diffusion coefficient
+/// @param r reaction coefficient
+/// @param L domain size
+/// @param t time
+/// @param source_type type of source
+/// @param model_type type of model (logistic or grayscott)
 void reactiondiffusion_RK4_step_2d_combined(MDArray2D<double>& u,
                                             MDArray2D<double>& v,
                                             double dt, double D, double r,

@@ -1,7 +1,14 @@
+/**
+ * \ingroup reaction_2d
+ * \file main.cpp
+ * \brief Main file for 2d reaction solver
+ */
+
 /** main.cpp
  * 
- * main file for 2D reaction solver.
- * It can run with pseudo-spectral backward Euler or RK4. There are two
+ * @brief main file for 2D reaction solver.
+ * 
+ * @details Can run with pseudo-spectral backward Euler or RK4. There are two
  * reaction models, three initial conditions, and five source terms.
  * 
  * The solver works by using Strang splitting.
