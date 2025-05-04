@@ -9,3 +9,7 @@
 html/
 latex/
 Doxyfile.bak
+.vscode
+.venv/
+*.dat
+*.exe
