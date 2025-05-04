@@ -1,4 +1,4 @@
-# python file for visualizing simulation from data files
+# saves output data to a video (animation.mp4)
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -71,8 +71,9 @@ def update(i):
     # no need to reset limits here
     return surf, title
 
+# Create the animation
 ani = FuncAnimation(fig, update, init_func=init,
                     frames=len(files), interval=50, blit=False, repeat=False)
 
-plt.tight_layout()
-plt.show()
+# Save the animation to a video file
+ani.save('animation.mp4', writer='ffmpeg', fps=20)

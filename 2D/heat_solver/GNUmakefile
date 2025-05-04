@@ -1,11 +1,4 @@
-# Compiler
-CXX = g++
-
-# Compiler flags
-CXXFLAGS = -std=c++11 -Wall -Wextra -O3
-
-# Libraries (link FFTW)
-LIBS = -lfftw3
+include ../../Make.include
 
 # Executable names
 TARGET = heat_solver2d.exe
@@ -23,11 +16,10 @@ $(TARGET): $(SOURCES)
 # Run the 2D solver simulation.
 # Use the initial condition argument: sine or gaussian.
 run: $(TARGET) 
-	./$(TARGET) sine 
+	./$(TARGET) spectral_be sine none
 
 # Clean the executables and output data
 clean:
-	rm -f $(TARGET)
-	rm -rf data
+	rm -rf $(TARGET) data
 
 .PHONY: all run clean

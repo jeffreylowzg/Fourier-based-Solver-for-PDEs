@@ -1,0 +1,4 @@
+/** 
+ * \defgroup one_d 1D Solvers
+ * \brief All modules and solvers related to 1D problems.
+ */

@@ -1,3 +1,9 @@
+/**
+ * \ingroup reaction_2d
+ * \file MDArray2D.h
+ * \brief Header for 2D MDArray.
+ */
+
 #ifndef MDARRAY2D_H
 #define MDARRAY2D_H
 

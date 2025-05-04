@@ -1,6 +1,14 @@
 1D/data/
 2D/heat_solver/data/
-2D/convection/data/
+2D/advection/data/
+2D/reaction/data/
+.venv/
+*.exe
+*mp4
+.vscode
+html/
+latex/
+Doxyfile.bak
 .vscode
 .venv/
 *.dat
